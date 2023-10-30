@@ -5,14 +5,30 @@ const bodyParser = require('body-parser');
 const studentRoute = require('./routes/studentRoute');
 const subjectRoute = require('./routes/subjectRoute'); // Impor rute mata pelajaran
 const logRequest = require('./middleware/logger'); // Import middleware logging
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
 
+// Mengaktifkan CORS untuk semua rute
+app.use(cors());
+
 // Koneksi ke MongoDB dari variabel lingkungan .env
+// Menghubungkan ke MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+db.on('error', (error) => {
+  console.error('Koneksi MongoDB gagal:', error.message);
+});
+
+db.once('open', () => {
+  console.log('Berhasil terhubung ke MongoDB');
+  // Definisikan rute-rute API Anda di sini
+  // ...
 });
 
 // Gunakan middleware logging untuk mencetak informasi endpoint yang diakses
